@@ -1,0 +1,28 @@
+# Core
+pandas>=1.5
+numpy>=1.23
+scikit-learn>=1.2
+matplotlib>=3.6
+seaborn>=0.12
+
+# Medical/statistics
+scipy>=1.10
+statsmodels>=0.13
+
+# Notebooks
+jupyterlab
+ipykernel
+
+# Utilities
+python-dotenv
+joblib
+rich
+typer
+
+# OCR and Image Processing
+opencv-python
+pytesseract
+Pillow
+
+# Imbalanced datasets (ML)
+imblearn
