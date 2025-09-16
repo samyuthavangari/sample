@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - Heart Shield</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f8f9fa; }
+    .profile-card {
+      text-align: center;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: #fff;
+    }
+    .profile-card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+    }
+    .section-card {
+      margin-top: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/">❤️ Heart Shield</a>
+      <div class="ms-auto">
+        <a href="/upload" class="btn btn-outline-light btn-sm me-2">Upload Docs</a>
+        <button onclick="logout()" class="btn btn-light btn-sm">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-5">
+    <div class="row">
+
+      <!-- Profile Card -->
+      <div class="col-md-4">
+        <div class="profile-card">
+          <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile">
+          <h4 id="username">Loading...</h4>
+          <p id="email" class="text-muted">Loading...</p>
+          <span class="badge bg-primary" id="role">Loading...</span>
+        </div>
+      </div>
+
+      <!-- History Section -->
+      <div class="col-md-8">
+
+        <!-- Uploaded Documents -->
+        <div class="card section-card">
+          <div class="card-header bg-danger text-white fw-bold">Uploaded Documents</div>
+          <div class="card-body">
+            <table class="table table-striped">
+              <thead>
+                <tr><th>ID</th><th>File Name</th><th>Date</th></tr>
+              </thead>
+              <tbody id="docs">
+                <tr><td colspan="3" class="text-center">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Predictions -->
+        <div class="card section-card mt-4">
+          <div class="card-header bg-danger text-white fw-bold">Prediction History</div>
+          <div class="card-body">
+            <table class="table table-striped">
+              <thead>
+                <tr><th>ID</th><th>Result</th><th>Confidence</th><th>Date</th></tr>
+              </thead>
+              <tbody id="predictions">
+                <tr><td colspan="4" class="text-center">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+  async function loadProfile() {
+    const token = localStorage.getItem("token");
+    if (!token) { window.location.href = "/login"; return; }
+
+    try {
+      const res = await fetch("http://127.0.0.1:5000/users/profile", {
+        headers: { "Authorization": "Bearer " + token }
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        // Fill Profile Info
+        document.getElementById("username").innerText = data.username;
+        document.getElementById("email").innerText = data.email;
+        document.getElementById("role").innerText = data.role;
+
+        // Uploaded Docs
+        if (data.documents && data.documents.length > 0) {
+          document.getElementById("docs").innerHTML = data.documents.map(d => `
+            <tr>
+              <td>${d.id}</td>
+              <td>${d.filename}</td>
+              <td>${d.uploaded_at}</td>
+            </tr>
+          `).join("");
+        } else {
+          document.getElementById("docs").innerHTML = 
+            "<tr><td colspan='3' class='text-center'>No documents uploaded.</td></tr>";
+        }
+
+        // Predictions
+        if (data.predictions && data.predictions.length > 0) {
+          document.getElementById("predictions").innerHTML = data.predictions.map(p => `
+            <tr>
+              <td>${p.id}</td>
+              <td>${p.result}</td>
+              <td>${(p.probability * 100).toFixed(1)}%</td>
+              <td>${p.created_at}</td>
+            </tr>
+          `).join("");
+        } else {
+          document.getElementById("predictions").innerHTML = 
+            "<tr><td colspan='4' class='text-center'>No predictions yet.</td></tr>";
+        }
+
+      } else {
+        alert(data.error || "Failed to load profile");
+      }
+    } catch (err) {
+      alert("Error: " + err.message);
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  }
+
+  window.onload = loadProfile;
+  </script>
+
+</body>
+</html>

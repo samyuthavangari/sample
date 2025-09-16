@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make Prediction - Heart Shield</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-danger shadow">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="/">❤️ Heart Shield</a>
+      <div class="ms-auto">
+        <a href="/profile" class="btn btn-outline-light btn-sm me-2">Profile</a>
+        <button onclick="logout()" class="btn btn-light btn-sm">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Prediction Form -->
+  <div class="container-fluid py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-12">
+        <div class="card shadow-lg border-0 mx-auto" style="max-width: 1200px">
+          <div class="card-header text-center text-white fw-bold" 
+               style="background: linear-gradient(90deg,#ff4b2b, #cf0e3bff); font-size: 1.3rem;">
+            Heart Disease Prediction Form
+          </div>
+          <div class="card-body p-4">
+            <form id="predictForm" class="row g-3">
+
+              <!-- Example Input (with margin bottom for spacing) -->
+              <div class="col-md-6 mb-3">
+                <label for="age" class="form-label">Age</label>
+                <input type="number" id="age" class="form-control" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="sex" class="form-label">Sex (0 = Female, 1 = Male)</label>
+                <input type="number" id="sex" class="form-control" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="cp" class="form-label">Chest Pain Type (cp)</label>
+                <input type="number" id="cp" class="form-control" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="trestbps" class="form-label">Resting BP</label>
+                <input type="number" id="trestbps" class="form-control" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="chol" class="form-label">Cholesterol</label>
+                <input type="number" id="chol" class="form-control" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="fbs" class="form-label">Fasting Blood Sugar (fbs)</label>
+                <input type="number" id="fbs" class="form-control" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="restecg" class="form-label">Rest ECG</label>
+                <input type="number" id="restecg" class="form-control" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="thalach" class="form-label">Max Heart Rate (thalach)</label>
+                <input type="number" id="thalach" class="form-control" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="exang" class="form-label">Exercise Induced Angina</label>
+                <input type="number" id="exang" class="form-control" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="oldpeak" class="form-label">Oldpeak</label>
+                <input type="number" step="0.1" id="oldpeak" class="form-control" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="slope" class="form-label">Slope</label>
+                <input type="number" id="slope" class="form-control" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="ca" class="form-label">CA</label>
+                <input type="number" id="ca" class="form-control" required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="thal" class="form-label">Thal</label>
+                <input type="number" id="thal" class="form-control" required>
+              </div>
+
+              <!-- Model Selection -->
+              <div class="col-md-6 mb-3">
+                <label for="model" class="form-label">Choose Model</label>
+                <select id="model" class="form-select">
+                  <option value="logreg">Logistic Regression</option>
+                  <option value="rf">Random Forest</option>
+                  <option value="svm">SVM</option>
+                  <option value="nn">Neural Network</option>
+                </select>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="col-12 text-center mt-4">
+                <button type="submit" class="btn btn-lg px-5 text-white" 
+                        style="background: linear-gradient(90deg,#6a11cb,#2575fc);">
+                  Predict
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Prediction Result Card -->
+        <div id="resultCard" class="card shadow mt-4 d-none">
+          <div class="card-body text-center">
+            <h4>Prediction Result</h4>
+            <p id="resultText" class="fw-bold fs-5 text-danger"></p>
+            <p id="confidenceText" class="text-muted"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script>
+  document.getElementById("predictForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const token = localStorage.getItem("token");
+    if (!token) { alert("Please login first!"); return; }
+
+    const formData = {
+      age: parseInt(document.getElementById("age").value),
+      sex: parseInt(document.getElementById("sex").value),
+      cp: parseInt(document.getElementById("cp").value),
+      trestbps: parseInt(document.getElementById("trestbps").value),
+      chol: parseInt(document.getElementById("chol").value),
+      fbs: parseInt(document.getElementById("fbs").value),
+      restecg: parseInt(document.getElementById("restecg").value),
+      thalach: parseInt(document.getElementById("thalach").value),
+      exang: parseInt(document.getElementById("exang").value),
+      oldpeak: parseFloat(document.getElementById("oldpeak").value),
+      slope: parseInt(document.getElementById("slope").value),
+      ca: parseInt(document.getElementById("ca").value),
+      thal: parseInt(document.getElementById("thal").value),
+      model: document.getElementById("model").value
+    };
+
+    try {
+      const res = await fetch("http://127.0.0.1:5000/predictions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        // Show inline result instead of redirect
+        document.getElementById("resultCard").classList.remove("d-none");
+        document.getElementById("resultText").innerText = "Risk: " + data.result;
+        document.getElementById("confidenceText").innerText = "Confidence: " + (data.probability * 100).toFixed(2) + "%";
+      } else {
+        alert(data.error || "Prediction failed!");
+      }
+    } catch (err) {
+      alert("Error: " + err.message);
+    }
+  });
+
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  }
+  </script>
+
+</body>
+</html>

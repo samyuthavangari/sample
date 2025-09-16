@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Medical Document - Heart Shield</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f7f7fb;
+    }
+    header {
+      background: linear-gradient(90deg, #e52d27, #b31217);
+      color: white;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { margin: 0; }
+    header nav a, header nav button {
+      margin-left: 20px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    main {
+      max-width: 900px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0px 5px 25px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #b31217;
+      margin-bottom: 20px;
+    }
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    form input, form select {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      width: 100%;
+    }
+    form button {
+      grid-column: span 2;
+      padding: 14px;
+      background: linear-gradient(90deg, #e52d27, #b31217);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    form button:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>❤️ Heart Shield</h1>
+    <nav>
+      <a href="/profile">Profile</a>
+      <button onclick="logout()">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Upload Your Medical Document</h2>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+      <input type="file" id="document" name="document" required>
+
+      <!-- 13 features -->
+      <input type="number" id="age" name="age" placeholder="Age" required>
+      <select id="sex" name="sex" required>
+        <option value="">Select Sex</option>
+        <option value="1">Male</option>
+        <option value="0">Female</option>
+      </select>
+
+      <input type="number" id="cp" name="cp" placeholder="Chest Pain Type (0-3)" required>
+      <input type="number" id="trestbps" name="trestbps" placeholder="Resting BP (mm Hg)" required>
+      <input type="number" id="chol" name="chol" placeholder="Cholesterol (mg/dl)" required>
+      <input type="number" id="fbs" name="fbs" placeholder="Fasting Blood Sugar >120 (1/0)" required>
+      <input type="number" id="restecg" name="restecg" placeholder="Resting ECG (0-2)" required>
+      <input type="number" id="thalach" name="thalach" placeholder="Max Heart Rate" required>
+      <input type="number" id="exang" name="exang" placeholder="Exercise Angina (1/0)" required>
+      <input type="number" step="0.1" id="oldpeak" name="oldpeak" placeholder="Oldpeak (ST Depression)" required>
+      <input type="number" id="slope" name="slope" placeholder="Slope (0-2)" required>
+      <input type="number" id="ca" name="ca" placeholder="Major Vessels (0-3)" required>
+      <input type="number" id="thal" name="thal" placeholder="Thal (1=Normal,2=Fixed,3=Reversible)" required>
+
+      <button type="submit">Upload & Predict</button>
+    </form>
+  </main>
+
+  <script>
+    document.getElementById("uploadForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please login first!");
+        window.location.href = "/login";
+        return;
+      }
+
+      const formData = new FormData(this);
+
+      try {
+        const res = await fetch("http://127.0.0.1:5000/api/predictions/upload", {
+          method: "POST",
+          headers: { "Authorization": "Bearer " + token },
+          body: formData
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          // Save to localStorage for result.html
+          localStorage.setItem("lastPrediction", JSON.stringify(data));
+          window.location.href = "/result"; // Redirect
+        } else {
+          alert(data.error || "Prediction failed");
+        }
+      } catch (err) {
+        alert("Server error: " + err.message);
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
+  </script>
+</body>
+</html>

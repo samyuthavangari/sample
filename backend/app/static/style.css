@@ -1,0 +1,184 @@
+/* General Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+
+/* Body */
+body {
+  background: #f9f6ff;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  background: linear-gradient(135deg, #7b2ff7, #f107a3);
+  color: white;
+  padding: 2rem 1rem;
+  border-radius: 0 0 20px 20px;
+}
+.header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+.header p { font-size: 1rem; opacity: 0.9; }
+
+/* Main Container */
+.container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Card */
+.card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 400px;
+  width: 100%;
+}
+.card h2 {
+  margin-bottom: 1.5rem;
+  color: #7b2ff7;
+  text-align: center;
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 1.2rem;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: bold;
+}
+.form-group input {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* Buttons */
+.btn-primary {
+  width: 100%;
+  padding: 0.8rem;
+  background: linear-gradient(135deg, #7b2ff7, #f107a3);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+/* Footer Links */
+.form-footer {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.form-footer a {
+  color: #7b2ff7;
+  text-decoration: none;
+  font-weight: bold;
+}
+.form-footer a:hover { text-decoration: underline; }
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.8rem;
+  color: #777;
+}
+/* Form Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+/* Secondary Button */
+.btn-secondary {
+  width: 100%;
+  padding: 0.8rem;
+  background: #eee;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+.btn-secondary:hover {
+  background: #ddd;
+}
+/* Result Page */
+.result-card {
+  text-align: center;
+}
+
+.result-box {
+  margin: 1rem 0;
+  font-size: 1.2rem;
+}
+
+/* Risk Badges */
+.risk-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.risk-badge.low {
+  background-color: #4caf50; /* green */
+}
+.risk-badge.moderate {
+  background-color: #ff9800; /* orange */
+}
+.risk-badge.high {
+  background-color: #f44336; /* red */
+}
+/* Profile Layout */
+.profile-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+}
+
+.profile-card {
+  text-align: left;
+}
+
+.history-card {
+  text-align: left;
+}
+
+.history-list {
+  list-style: none;
+  padding: 0;
+}
+
+.history-list li {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+.register-box {
+  width: 90%;        /* responsive */
+  max-width: 400px;  /* don’t grow too big */
+  margin: 40px auto; /* smaller top margin on mobile */
+}

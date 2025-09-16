@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prediction Result - Heart Shield</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f7f7fb;
+    }
+    header {
+      background: linear-gradient(90deg, #e52d27, #b31217);
+      color: white;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { margin: 0; }
+    header nav a, header nav button {
+      margin-left: 20px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    main {
+      max-width: 700px;
+      margin: 60px auto;
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0px 5px 25px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h2 { color: #b31217; margin-bottom: 20px; }
+    .card {
+      padding: 25px;
+      border-radius: 10px;
+      background: #f2f6ff;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.05);
+    }
+    .high { color: #e52d27; font-weight: bold; }
+    .low { color: #28a745; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>❤️ Heart Shield</h1>
+    <nav>
+      <a href="/upload">New Prediction</a>
+      <a href="/profile">Profile</a>
+      <button onclick="logout()">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Your Prediction Result</h2>
+    <div class="card" id="prediction"></div>
+  </main>
+
+  <script>
+    const saved = localStorage.getItem("lastPrediction");
+    if (saved) {
+      const data = JSON.parse(saved);
+      document.getElementById("prediction").innerHTML = `
+        <p><strong>Risk:</strong> <span class="${data.result.includes('High') ? 'high' : 'low'}">${data.result}</span></p>
+        <p><strong>Confidence:</strong> ${(data.probability * 100).toFixed(2)}%</p>
+        <p><small>Prediction ID: ${data.id} | Date: ${data.created_at || "N/A"}</small></p>
+      `;
+    } else {
+      document.getElementById("prediction").innerHTML = "<p>No prediction data found.</p>";
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
+  </script>
+</body>
+</html>
