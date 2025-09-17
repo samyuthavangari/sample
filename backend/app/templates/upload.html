@@ -81,7 +81,12 @@
   <main>
     <h2>Upload Your Medical Document</h2>
 
-    <form id="uploadForm" enctype="multipart/form-data">
+    <!-- ✅ Added action and method -->
+    <form id="uploadForm" 
+          action="http://127.0.0.1:5000/api/predictions/upload" 
+          method="post" 
+          enctype="multipart/form-data">
+
       <input type="file" id="document" name="document" required>
 
       <!-- 13 features -->

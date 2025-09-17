@@ -1,8 +1,16 @@
 # backend/app/models.py
 from .extensions import db
 from datetime import datetime
-from .extensions import db
-from datetime import datetime
+
+class Document(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    filename = db.Column(db.String(255), nullable=False)
+    uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<Document {self.filename}>"
+
 
 
 
@@ -37,7 +45,7 @@ class Prediction(db.Model):
     input_data = db.Column(db.JSON, nullable=False)   # flexible storage
     result = db.Column(db.String(64), nullable=False)
     probability = db.Column(db.Float)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime,nullable=False, default=datetime.utcnow)
 
     user = db.relationship("User", backref=db.backref("predictions", lazy=True))
 

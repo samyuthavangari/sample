@@ -38,15 +38,41 @@
       box-shadow: 0px 5px 25px rgba(0,0,0,0.1);
       text-align: center;
     }
-    h2 { color: #b31217; margin-bottom: 20px; }
+    h2 {
+      color: #b31217;
+      margin-bottom: 25px;
+    }
     .card {
-      padding: 25px;
-      border-radius: 10px;
+      padding: 30px;
+      border-radius: 12px;
       background: #f2f6ff;
       box-shadow: 0px 4px 12px rgba(0,0,0,0.05);
     }
-    .high { color: #e52d27; font-weight: bold; }
-    .low { color: #28a745; font-weight: bold; }
+    .high {
+      color: #e52d27;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    .low {
+      color: #28a745;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    .btn {
+      margin-top: 25px;
+      padding: 12px 25px;
+      font-size: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      color: white;
+      background: linear-gradient(90deg, #e52d27, #b31217);
+      transition: 0.3s;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
   </style>
 </head>
 <body>
@@ -62,19 +88,24 @@
   <main>
     <h2>Your Prediction Result</h2>
     <div class="card" id="prediction"></div>
+    <button class="btn" onclick="window.location.href='/upload'">🔄 Make Another Prediction</button>
   </main>
-
+  
   <script>
     const saved = localStorage.getItem("lastPrediction");
     if (saved) {
       const data = JSON.parse(saved);
       document.getElementById("prediction").innerHTML = `
-        <p><strong>Risk:</strong> <span class="${data.result.includes('High') ? 'high' : 'low'}">${data.result}</span></p>
+        <p><strong>Risk:</strong> 
+          <span class="${data.result.includes('High') ? 'high' : 'low'}">
+            ${data.result}
+          </span>
+        </p>
         <p><strong>Confidence:</strong> ${(data.probability * 100).toFixed(2)}%</p>
         <p><small>Prediction ID: ${data.id} | Date: ${data.created_at || "N/A"}</small></p>
       `;
     } else {
-      document.getElementById("prediction").innerHTML = "<p>No prediction data found.</p>";
+      document.getElementById("prediction").innerHTML = "<p>No prediction data found. Please try again.</p>";
     }
 
     function logout() {
